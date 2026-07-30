@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 async function render(path = "/") {
@@ -50,4 +51,10 @@ test("renders the happier alternative proposal", async () => {
   assert.match(html, /提案 83\.95%/);
   assert.match(html, /資産と救済を、別の仕組みにする/);
   assert.match(html, /新旧仕様の確率計算へ戻る/);
+});
+
+test("page anchors release manual scrolling immediately", async () => {
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  assert.match(css, /^html \{ scroll-behavior: auto; \}$/m);
+  assert.doesNotMatch(css, /scroll-behavior: smooth/);
 });
