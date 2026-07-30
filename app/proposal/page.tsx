@@ -145,7 +145,7 @@ export default function ProposalPage() {
           </article>
           <article>
             <span>4PU・400連分のPU期待数</span>
-            <div><b>現行 5.040人</b><i>≈</i><b>提案 5.034人</b></div>
+            <div><b>現行 5.040回</b><i>≈</i><b>提案 5.034回</b></div>
             <p>運営側の平均払い出しも、ほぼ同じです。</p>
           </article>
         </div>
