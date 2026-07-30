@@ -50,6 +50,13 @@ test("renders the happier alternative proposal", async () => {
   assert.match(html, /現行 84\.01%/);
   assert.match(html, /提案 83\.95%/);
   assert.match(html, /資産と救済を、別の仕組みにする/);
+  assert.match(html, /予算を増やしたとき、全員確保率はどう推移するか/);
+  assert.match(html, /PU総獲得回数の期待値と標準偏差/);
+  assert.match(html, /全員確保までの平均コストと、個人差は近いか/);
+  assert.match(html, /確率的な整合性は高い/);
+  assert.match(html, /2\.51/);
+  assert.match(html, /304\.4/);
+  assert.match(html, /108\.1/);
   assert.match(html, /新旧仕様の確率計算へ戻る/);
 });
 

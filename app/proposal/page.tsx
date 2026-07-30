@@ -1,18 +1,14 @@
 import type { Metadata } from "next";
+import ProposalEvidence from "./ProposalEvidence";
+import { createProposalEvidenceData } from "./evidence-model";
 
 export const metadata: Metadata = {
   title: "みんなが幸せになれる募集案｜ブルアカ募集期待値ラボ",
   description: "募集スタンプを消えない資産として残し、現行仕様に近い取得性能と安心して喜べるガチャ体験を両立する非公式の改善案。",
 };
 
-const completionRows = [
-  { target: "1人", current: "79.0 ± 46.1連", proposal: "80.8 ± 42.0連" },
-  { target: "2人", current: "151.3 ± 65.4連", proposal: "148.2 ± 72.0連" },
-  { target: "3人", current: "223.5 ± 82.6連", proposal: "226.3 ± 95.0連" },
-  { target: "4人", current: "298.8 ± 100.8連", proposal: "304.4 ± 108.1連" },
-];
-
 export default function ProposalPage() {
+  const evidenceData = createProposalEvidenceData();
   return (
     <main className="proposal-page">
       <header className="proposal-hero" id="top">
@@ -132,9 +128,9 @@ export default function ProposalPage() {
 
       <section className="proposal-section proposal-balance" aria-labelledby="balance-title">
         <header className="proposal-section-heading">
-          <span>04 / THE BALANCE</span>
-          <h2 id="balance-title">ユーザーだけが得をしすぎる案でもない</h2>
-          <p>この提案は、現行仕様の取得性能と払い出し量へ近づくように調整しています。数値は、サイトと同じ★3率3.0%・PU率0.7%を基準にした計算結果です。</p>
+          <span>04 / QUANTITATIVE VALIDATION</span>
+          <h2 id="balance-title">現行仕様と同じものさしで、提案を検証する</h2>
+          <p>ここからは、取得性能と運営側の払い出し量を分けて検証します。比較するのは、全員確保率の累積曲線、固定予算でのPU総獲得回数、全員確保コストの三つです。各指標について、平均だけでなく標準偏差と保証位置も確認します。</p>
         </header>
 
         <div className="proposal-balance-cards">
@@ -150,17 +146,7 @@ export default function ProposalPage() {
           </article>
         </div>
 
-        <div className="proposal-table-wrap">
-          <table>
-            <thead><tr><th>全員確保目標</th><th>現行仕様</th><th>提案仕様</th></tr></thead>
-            <tbody>
-              {completionRows.map((row) => (
-                <tr key={row.target}><th>{row.target}</th><td>{row.current}</td><td>{row.proposal}</td></tr>
-              ))}
-            </tbody>
-          </table>
-          <p>数値は「全員確保までに使う青輝石相当の平均連数 ± 標準偏差」です。提案と現行の平均差は約2～6連に収まります。</p>
-        </div>
+        <ProposalEvidence data={evidenceData} />
       </section>
 
       <section className="proposal-section proposal-conclusion" aria-labelledby="conclusion-title">
