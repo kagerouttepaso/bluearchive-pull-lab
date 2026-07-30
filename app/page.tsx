@@ -1098,10 +1098,22 @@ export default function Home() {
         </article>
       </section>
 
+      <section className="proposal-teaser section-shell" aria-labelledby="proposal-teaser-title">
+        <div>
+          <span className="eyebrow">A HAPPIER ALTERNATIVE</span>
+          <h2 id="proposal-teaser-title">もっと、みんなが幸せになれる募集に<br />できたかもしれない。</h2>
+          <p>旧仕様の安心感を残しながら、新仕様に近い取得性能も実現する。そんな第三の募集システムを、確率計算から組み立てました。</p>
+        </div>
+        <a href="./proposal/">消えない資産を中心にした改善案を読む <span aria-hidden="true">→</span></a>
+      </section>
+
       <footer>
         <div className="brand footer-brand"><span className="brand-mark">Σ</span><span><b>募集期待値ラボ</b><small>UNOFFICIAL CALCULATOR</small></span></div>
         <p>本サイトは非公式の確率計算ツールです。実際の募集条件はゲーム内表示と公式告知を確認してください。</p>
-        <a href="https://bluearchive.jp/news/newsJump/679" target="_blank" rel="noreferrer">公式「生徒募集システムのリニューアルについて」↗</a>
+        <div className="footer-links">
+          <a href="./proposal/">みんなが幸せになれる募集案 →</a>
+          <a href="https://bluearchive.jp/news/newsJump/679" target="_blank" rel="noreferrer">公式告知 ↗</a>
+        </div>
       </footer>
     </main>
   );

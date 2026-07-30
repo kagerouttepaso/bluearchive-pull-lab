@@ -14,33 +14,44 @@ const basePath = `/${repository}/`;
 const origin = `https://${owner}.github.io`;
 
 const { default: worker } = await import(workerUrl.href);
-const response = await worker.fetch(
-  new Request(`${origin}/`, {
-    headers: {
-      accept: "text/html",
-      "x-forwarded-host": `${owner}.github.io`,
-      "x-forwarded-proto": "https",
-    },
-  }),
-  { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
-  { waitUntil() {}, passThroughOnException() {} },
-);
 
-if (!response.ok) {
-  throw new Error(`Static render failed with status ${response.status}`);
+async function renderRoute(route) {
+  const response = await worker.fetch(
+    new Request(`${origin}${route}`, {
+      headers: {
+        accept: "text/html",
+        "x-forwarded-host": `${owner}.github.io`,
+        "x-forwarded-proto": "https",
+      },
+    }),
+    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+    { waitUntil() {}, passThroughOnException() {} },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Static render failed for ${route} with status ${response.status}`);
+  }
+
+  let html = await response.text();
+  html = html.replaceAll("/assets/", `${basePath}assets/`);
+  for (const asset of ["favicon.svg", "file.svg", "globe.svg", "og.png", "window.svg"]) {
+    html = html.replaceAll(`/${asset}`, `${basePath}${asset}`);
+  }
+  return html;
 }
 
-let html = await response.text();
-html = html.replaceAll("/assets/", `${basePath}assets/`);
-for (const asset of ["favicon.svg", "file.svg", "globe.svg", "og.png", "window.svg"]) {
-  html = html.replaceAll(`/${asset}`, `${basePath}${asset}`);
-}
+const [homeHtml, proposalHtml] = await Promise.all([
+  renderRoute("/"),
+  renderRoute("/proposal"),
+]);
 
 await rm(outputDir, { recursive: true, force: true });
 await mkdir(outputDir, { recursive: true });
 await cp(clientDir, outputDir, { recursive: true });
-await writeFile(path.join(outputDir, "index.html"), html, "utf8");
-await writeFile(path.join(outputDir, "404.html"), html, "utf8");
+await writeFile(path.join(outputDir, "index.html"), homeHtml, "utf8");
+await writeFile(path.join(outputDir, "404.html"), homeHtml, "utf8");
+await mkdir(path.join(outputDir, "proposal"), { recursive: true });
+await writeFile(path.join(outputDir, "proposal", "index.html"), proposalHtml, "utf8");
 await writeFile(path.join(outputDir, ".nojekyll"), "", "utf8");
 
 console.log(`GitHub Pages export created at ${outputDir}`);

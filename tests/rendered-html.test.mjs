@@ -1,12 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-async function render() {
+async function render(path = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
   return worker.fetch(
-    new Request("http://localhost/", { headers: { accept: "text/html" } }),
+    new Request(`http://localhost${path}`, { headers: { accept: "text/html" } }),
     { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
     { waitUntil() {}, passThroughOnException() {} },
   );
@@ -35,5 +35,19 @@ test("renders the gacha comparison calculator", async () => {
   assert.ok(rateColumn >= 0 && rateColumn < winningColumn && winningColumn < feelingColumn);
   assert.match(html, /THREE COLUMNS/);
   assert.match(html, /計算前提/);
+  assert.match(html, /もっと、みんなが幸せになれる募集/);
+  assert.match(html, /\.\/proposal\//);
   assert.doesNotMatch(html, /react-loading-skeleton/);
+});
+
+test("renders the happier alternative proposal", async () => {
+  const response = await render("/proposal");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /みんなが幸せになれる/);
+  assert.match(html, /★3確定＋80スタンプ/);
+  assert.match(html, /現行 84\.01%/);
+  assert.match(html, /提案 83\.95%/);
+  assert.match(html, /資産と救済を、別の仕組みにする/);
+  assert.match(html, /新旧仕様の確率計算へ戻る/);
 });
